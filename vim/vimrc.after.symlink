@@ -1,0 +1,62 @@
+if has("autocmd")
+  autocmd BufWritePost .vimrc.after source ~/.vimrc.after
+  autocmd BufWritePost .vimrc.after source ~/.dotfiles/vim/vimrc.after.symlink
+end
+nmap <Leader>v :edit ~/.vimrc.after<CR>
+
+
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" Swapfiles are annoying
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+"
+set noswapfile
+
+
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" Buffer navigation
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+" Return switches between the last two buffers
+nnoremap <CR> <C-^>
+
+" Tab / Shift-Tab to cycle through buffers without saving
+nnoremap <Tab> :bnext!<CR>
+nnoremap <S-Tab> :bprevious!<CR>
+
+" Improved window usage.
+" let g:miniBufExplModSelTarget=1
+
+" Open mini buf all the time.
+" let g:miniBufExplorerMoreThanOne=2
+
+
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" Ctags
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+map <Leader>t :TlistToggle<CR>
+let Tlist_WinWidth = 50
+
+
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" Improved editor commands
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+"make Y consistent with C and D
+nnoremap Y y$
+
+"stamping - replace current word with last yank
+nnoremap S "_diwP
+
+" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" Whitespace
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+function! TrimWhiteSpace()
+  %s/\s*$//
+  ''
+:endfunction
+
+" Control-K trim trailing whitespace
+map <C-K> :call TrimWhiteSpace()<CR>
+

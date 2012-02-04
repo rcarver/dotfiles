@@ -1,0 +1,52 @@
+if has("autocmd")
+  autocmd BufWritePost .gvimrc.after source ~/.gvimrc.after
+  autocmd BufWritePost .gvimrc.after source ~/.dotfiles/vim/gvimrc.after.symlink
+end
+nmap <Leader>g :edit ~/.gvimrc.after<CR>
+
+
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" PeepOpen
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+" Cmd-t opens PeepOpen
+if has("gui_macvim")
+  "macmenu &File.New\ Tab key=<nop>
+  "map <D-t> <Plug>PeepOpen
+end
+
+
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" GUI
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+" Colors
+let g:solarized_contrast="normal"    "default value is normal
+let g:solarized_visibility="normal"    "default value is normal
+syntax enable
+set background=dark
+colorscheme solarized
+
+" Use some transaprency
+set transparency=1
+
+" Customize the GUI
+set guioptions=aAce
+
+" Use the best font
+if has("gui_macvim")
+  set guifont=Monaco:h12
+  set linespace=1
+  set antialias
+   "set guifont=Monaco:h10
+   "set noantialias
+end
+
+
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" " Buffer navigation
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+" Cmd-w closes windows properly with plugin/bclose.vim
+macmenu File.Close key=<nop>
+map <D-w> <Plug>Kwbd
