@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'tempfile'
+require 'optparse'
+
+@paste = false
+@markdown = nil
+
+OptionParser.new(ARGV) { |opts|
+  opts.on("-p", "--paste", "Upload a png from your clipboard") do |p|
+    @paste = true
+  end
+  opts.on("-m", "--markdown TEXT", "Create a markdown link with TEXT") do |m|
+    @markdown = m
+  end
+}.parse!
+
+if @paste
+
+  # Create a temporary file name for writing a png on the clipboard.
+  if @markdown
+    tempfile = "#{@markdown.downcase.gsub(/\s+/, '-')}.png"
+  else
+    tempfile = "#{$0}-paste.png"
+  end
+
+  # pngpaste writes to stderr on error but still returns
+  # an exitstatus of 0. To detect an error redirect stderr
+  # to stdout and assume that success prints nothing.
+  out = `pngpaste #{tempfile} 2>&1`
+  abort out unless out.empty?
+
+  # Store the tempfile in ARGV to pass to cloudapp.
+  ARGV.unshift tempfile
+end
+
+# Let cloudapp do the uploads.
+system "cloudapp", *ARGV
+
+# Clean up the tempfile.
+FileUtils.rm(tempfile) if tempfile
+
+# Transform the urls from cloudapp to markdown links.
+if @markdown
+  urls = `pbpaste`
+  links = urls.split(",").map { |url| "![#{@markdown}](#{url})" }
+  `echo '#{links.join(',')}' | tr -d "\n" | pbcopy`
+end
