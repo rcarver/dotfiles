@@ -1,26 +1,85 @@
 #!/usr/bin/env ruby
+#
+# screenly
+# Ryan Carver / @rcarver
+#
+#/ screenly uploads images from your clipboard to CloudApp. And more.
+#/
+#/  * Optionally wraps the cl.ly url in a markdown image tag.
+#/  * TODO: take screenshots for you.
+#/
+#/ Dependencies:
+#/
+#/  * `cloudapp` https://github.com/holman/dotfiles/blob/master/bin/cloudapp
+#/  * `pngpaste` https://github.com/jcsalterego/pngpaste
+#/
+#/ Examples:
+#/
+#/    # upload an image in your clipboard and get a markdown image tag.
+#/    <take a screenshot and store it on the clipboard (hold the ctrl key)>
+#/    screenly -p -m awesome
+#/    <in your clipboard: ![awesome](http://cl.ly/... "awesome")>
+#/
+#/    # upload multiple files on disk and get markdown for each one.
+#/    screenly -m one -m two file1.png file2.png
+#/    <in your clipboard: ![one](http://cl.ly/... "one"),![two](http://cl.ly/... "two")>
+#/
+#/    # mix and match clipboard and files.
+#/    <take a screenshot and store it on the clipboard (hold the ctrl key)>
+#/    screenly -p file1.png
+#/    <in your clipboard: ![](http://cl.ly/...),![](http://cl.ly/...)>
+#/
+#/    # mix and match clipboard and files, with markdown.
+#/    <take a screenshot and store it on the clipboard (hold the ctrl key)>
+#/    screenly -p -m clipped file1.png
+#/    <in your clipboard: ![clipped](http://cl.ly/... "clipped"),![](http://cl.ly/...)>
+#/
+#/    # use '--' to separate args and files (useful to use markdown with no text with a file)
+#/    screenly -m -- file1.png
+#/    <in your clipboard: ![](http://cl.ly/...)>
 
 require 'fileutils'
 require 'tempfile'
 require 'optparse'
 
 @paste = false
-@markdown = nil
+@markdown = []
+@test = !!ENV['TEST']
+
+# https://github.com/rtomayko/ronn/blob/master/bin/ronn
+def about
+  puts File.readlines(__FILE__).
+    grep(/^#\/.*/).
+    map { |line| line.chomp[3..-1] }.
+    join("\n")
+end
 
 OptionParser.new(ARGV) { |opts|
   opts.on("-p", "--paste", "Upload a png from your clipboard") do |p|
     @paste = true
   end
-  opts.on("-m", "--markdown TEXT", "Create a markdown link with TEXT") do |m|
-    @markdown = m
+  opts.on("-m", "--markdown [TEXT]", "Create a markdown link. May be used once for each image.") do |m|
+    @markdown << m
+  end
+  opts.on("-h", "--help", "Show the help") do
+    about
+    puts
+    puts "Usage: $0 <options> [<file>...]"
+    puts "       $0 -p"
+    puts "       $0 -p -m 'describe image'"
+    puts "       $0 -m 'describe image' file.png another.png"
+    puts "       $0 -m -- file.png"
+    puts opts.to_s
+    exit 2
   end
 }.parse!
 
 if @paste
 
   # Create a temporary file name for writing a png on the clipboard.
-  if @markdown
-    tempfile = "#{@markdown.downcase.gsub(/\s+/, '-')}.png"
+  # If we've specified any markdown strings, use that as the file name.
+  if @markdown.any?
+    tempfile = "#{@markdown.first.downcase.gsub(/\s+/, '-')}.png"
   else
     tempfile = "#{$0}-paste.png"
   end
@@ -35,15 +94,35 @@ if @paste
   ARGV.unshift tempfile
 end
 
-# Let cloudapp do the uploads.
-system "cloudapp", *ARGV
+if @test
+  puts "Uploading files:"
+  puts ARGV.join("\n")
+  urls = []
+  ARGV.size.times { |i| urls << "http://cl.ly/img#{i}" }
+  `echo '#{urls.join(',')}' | pbcopy`
+else
+  # Let cloudapp do the uploads.
+  system "cloudapp", *ARGV
+end
 
 # Clean up the tempfile.
 FileUtils.rm(tempfile) if tempfile
 
 # Transform the urls from cloudapp to markdown links.
-if @markdown
+unless @markdown.empty?
   urls = `pbpaste`
-  links = urls.split(",").map { |url| "![#{@markdown}](#{url})" }
+  links = urls.split(",").zip(@markdown).map do |url, m|
+    if m.nil?
+      "![](#{url})"
+    else
+      "![#{m}](#{url} \"#{m}\")"
+    end
+  end
   `echo '#{links.join(',')}' | tr -d "\n" | pbcopy`
+end
+
+if @test
+  puts
+  puts "Your clipboard contains:"
+  puts `pbpaste`.split(",")
 end
