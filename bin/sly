@@ -3,7 +3,7 @@
 # sly
 # Ryan Carver / @rcarver
 #
-#/ sly uploads screenshots to CloudApp. And more.
+#/ sly uploads screenshots to CloudApp (cl.ly). And more.
 #/
 #/  * Transports images directly from your clipboard to CloudApp.
 #/  * Optionally wraps the cl.ly url in a markdown image tag.
@@ -88,12 +88,14 @@ OptionParser.new(ARGV) { |opts|
   opts.on("-h", "--help", "Show the help") do
     about
     puts
-    puts "Usage: sly <options> [<file>...]"
+    puts "Usage: sly [<options>] [<file>...]"
     puts "       sly"
     puts "       sly -c"
     puts "       sly -p"
     puts "       sly -c -m 'describe image'"
     puts "       sly -m 'describe image' file.png another.png"
+    puts
+    puts "Options:"
     puts opts.to_s
     exit 2
   end
