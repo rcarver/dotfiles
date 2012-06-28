@@ -7,7 +7,7 @@
 #/
 #/  * Transports images directly from your clipboard to CloudApp.
 #/  * Optionally wraps the cl.ly url in a markdown image tag.
-#/  * Take screenshots for you. Run screenly, take the shot, paste the result.
+#/  * Take screenshots for you. Run screenly, take the shot, paste the link.
 #/
 #/ Dependencies:
 #/
@@ -16,39 +16,39 @@
 #/
 #/ Examples:
 #/
-#/  Take a screenshot and upload it.
+#/    Take a screenshot and upload it (the default with no other arguments).
 #/
-#/    screenly -c
-#/    <screenshotting in interactive mode. spacebar toggles betwen selection and window modes.>
-#/    <in your clipboard: ![](http://cl.ly/...)>
+#/      $ screenly
+#/      <screenshotting in interactive mode. spacebar toggles betwen selection and window modes.>
+#/      <in your clipboard: ![](http://cl.ly/...)>
 #/
-#/  Upload an image in your clipboard and get a markdown image tag.
+#/    Upload an image in your clipboard and get a markdown image tag.
 #/
-#/    <take a screenshot and store it on the clipboard (hold the ctrl key)>
-#/    screenly -p -m awesome
-#/    <in your clipboard: ![awesome](http://cl.ly/... "awesome")>
+#/      <take a screenshot and store it on the clipboard (hold the ctrl key)>
+#/      $ screenly -p -m awesome
+#/      <in your clipboard: ![awesome](http://cl.ly/... "awesome")>
 #/
-#/  Upload multiple files on disk and get markdown for each one.
+#/    Upload multiple files on disk and get markdown for each one.
 #/
-#/    screenly -m one -m two file1.png file2.png
-#/    <in your clipboard: ![one](http://cl.ly/... "one"),![two](http://cl.ly/... "two")>
+#/      $ screenly -m one -m two file1.png file2.png
+#/      <in your clipboard: ![one](http://cl.ly/... "one"),![two](http://cl.ly/... "two")>
 #/
-#/  Mix-and-match clipboard and files.
+#/    Mix-and-match clipboard and files.
 #/
-#/    <take a screenshot and store it on the clipboard (hold the ctrl key)>
-#/    screenly -p file1.png
-#/    <in your clipboard: ![](http://cl.ly/...),![](http://cl.ly/...)>
+#/      <take a screenshot and store it on the clipboard (hold the ctrl key)>
+#/      $ screenly -p file1.png
+#/      <in your clipboard: ![](http://cl.ly/...),![](http://cl.ly/...)>
 #/
-#/  Mix and match clipboard and files, with markdown.
+#/    Mix and match clipboard and files, with markdown.
 #/
-#/    <take a screenshot and store it on the clipboard (hold the ctrl key)>
-#/    screenly -p -m clipped file1.png
-#/    <in your clipboard: ![clipped](http://cl.ly/... "clipped"),![](http://cl.ly/...)>
+#/      <take a screenshot and store it on the clipboard (hold the ctrl key)>
+#/      $ screenly -p -m clipped file1.png
+#/      <in your clipboard: ![clipped](http://cl.ly/... "clipped"),![](http://cl.ly/...)>
 #/
-#/  Use '--' to separate args and files (useful to use markdown with no text with a file)
+#/    Use '--' to separate args and files (useful to use markdown with no text with a file)
 #/
-#/    screenly -m -- file1.png
-#/    <in your clipboard: ![](http://cl.ly/...)>
+#/      $ screenly -m -- file1.png
+#/      <in your clipboard: ![](http://cl.ly/...)>
 
 require 'fileutils'
 require 'optparse'
