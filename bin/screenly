@@ -53,12 +53,20 @@
 require 'fileutils'
 require 'optparse'
 
+# Default options.
 @paste = false
-@capture = false
-@markdown = []
-@test = !!ENV['TEST']
+@capture = nil
+@markdown = [nil]
+@test = !!ENV['TEST'] # Test mode. Don't upload to CloudApp.
 
-# https://github.com/rtomayko/ronn/blob/master/bin/ronn
+# If no arguments are given, capture a screenshot and copy it to the clipboard
+# as markdown.
+if ARGV.empty?
+  @capture = "i"
+  @markdown = [nil]
+end
+
+# rad: https://github.com/rtomayko/ronn/blob/master/bin/ronn
 def about
   puts File.readlines(__FILE__).
     grep(/^#\/.*/).
@@ -67,24 +75,25 @@ def about
 end
 
 OptionParser.new(ARGV) { |opts|
+  opts.on("-c", "--capture [MODE]", "Capture a screenshot now. Defaults to interactive mode.") do |mode|
+    abort "capture mode must be one of <i, w, s>. See `screencapture -h`" if mode && !%w(i w s).include?(mode)
+    @capture = mode || "i"
+  end
   opts.on("-p", "--paste", "Upload a png from your clipboard.") do |p|
     @paste = true
   end
   opts.on("-m", "--markdown [TEXT]", "Create a markdown link. May be used once for each image.") do |m|
     @markdown << m
   end
-  opts.on("-c", "--capture [MODE]", "Capture a screenshot now. Defaults to interactive mode.") do |mode|
-    abort "capture mode must be one of <i, w, s>. See `screencapture -h`" if mode && !%w(i w s).include?(mode)
-    @capture = mode || "i"
-  end
   opts.on("-h", "--help", "Show the help") do
     about
     puts
     puts "Usage: screenly <options> [<file>...]"
+    puts "       screenly"
+    puts "       screenly -c"
     puts "       screenly -p"
-    puts "       screenly -p -m 'describe image'"
+    puts "       screenly -c -m 'describe image'"
     puts "       screenly -m 'describe image' file.png another.png"
-    puts "       screenly -m -- file.png"
     puts opts.to_s
     exit 2
   end
