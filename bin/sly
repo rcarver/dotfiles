@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 #
-# screenly
+# sly
 # Ryan Carver / @rcarver
 #
-#/ screenly uploads screenshots to CloudApp. And more.
+#/ sly uploads screenshots to CloudApp. And more.
 #/
 #/  * Transports images directly from your clipboard to CloudApp.
 #/  * Optionally wraps the cl.ly url in a markdown image tag.
-#/  * Take screenshots for you. Run screenly, take the shot, paste the link.
+#/  * Take screenshots for you. Run sly, take the shot, paste the link.
 #/
 #/ Dependencies:
 #/
@@ -18,36 +18,36 @@
 #/
 #/    Take a screenshot and upload it (the default with no other arguments).
 #/
-#/      $ screenly
-#/      <screenshotting in interactive mode. spacebar toggles betwen selection and window modes.>
+#/      $ sly
+#/      <screenshotting in interactive mode. spacebar toggles betwen selection and window modes>
 #/      <in your clipboard: ![](http://cl.ly/...)>
 #/
 #/    Upload an image in your clipboard and get a markdown image tag.
 #/
 #/      <take a screenshot and store it on the clipboard (hold the ctrl key)>
-#/      $ screenly -p -m awesome
+#/      $ sly -p -m awesome
 #/      <in your clipboard: ![awesome](http://cl.ly/... "awesome")>
 #/
 #/    Upload multiple files on disk and get markdown for each one.
 #/
-#/      $ screenly -m one -m two file1.png file2.png
+#/      $ sly -m one -m two file1.png file2.png
 #/      <in your clipboard: ![one](http://cl.ly/... "one"),![two](http://cl.ly/... "two")>
 #/
 #/    Mix-and-match clipboard and files.
 #/
 #/      <take a screenshot and store it on the clipboard (hold the ctrl key)>
-#/      $ screenly -p file1.png
+#/      $ sly -m -p file1.png
 #/      <in your clipboard: ![](http://cl.ly/...),![](http://cl.ly/...)>
 #/
 #/    Mix and match clipboard and files, with markdown.
 #/
 #/      <take a screenshot and store it on the clipboard (hold the ctrl key)>
-#/      $ screenly -p -m clipped file1.png
+#/      $ sly -p -m clipped file1.png
 #/      <in your clipboard: ![clipped](http://cl.ly/... "clipped"),![](http://cl.ly/...)>
 #/
 #/    Use '--' to separate args and files (useful to use markdown with no text with a file)
 #/
-#/      $ screenly -m -- file1.png
+#/      $ sly -m -- file1.png
 #/      <in your clipboard: ![](http://cl.ly/...)>
 
 require 'fileutils'
@@ -59,8 +59,8 @@ require 'optparse'
 @markdown = [nil]
 @test = !!ENV['TEST'] # Test mode. Don't upload to CloudApp.
 
-# If no arguments are given, capture a screenshot and copy it to the clipboard
-# as markdown.
+# If no arguments are given, change the defaults to capture a screenshot and
+# copy it to the clipboard as markdown.
 if ARGV.empty?
   @capture = "i"
   @markdown = [nil]
@@ -88,12 +88,12 @@ OptionParser.new(ARGV) { |opts|
   opts.on("-h", "--help", "Show the help") do
     about
     puts
-    puts "Usage: screenly <options> [<file>...]"
-    puts "       screenly"
-    puts "       screenly -c"
-    puts "       screenly -p"
-    puts "       screenly -c -m 'describe image'"
-    puts "       screenly -m 'describe image' file.png another.png"
+    puts "Usage: sly <options> [<file>...]"
+    puts "       sly"
+    puts "       sly -c"
+    puts "       sly -p"
+    puts "       sly -c -m 'describe image'"
+    puts "       sly -m 'describe image' file.png another.png"
     puts opts.to_s
     exit 2
   end
@@ -122,7 +122,7 @@ if @paste
   if @markdown.any?
     tempfile = tf "#{@markdown.first.downcase.gsub(/\s+/, '-')}.png"
   else
-    tempfile = tf "screenly-paste.png"
+    tempfile = tf "sly-paste.png"
   end
 
   # pngpaste writes to stderr on error but still returns
@@ -137,7 +137,7 @@ end
 
 if @capture
 
-  tempfile = tf "screenly-capture.png"
+  tempfile = tf "sly-capture.png"
 
   # Run screencapture.
   `screencapture -#{@capture} -m -tpng #{tempfile}`
