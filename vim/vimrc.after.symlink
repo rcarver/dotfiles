@@ -60,3 +60,10 @@ function! TrimWhiteSpace()
 " Control-K trim trailing whitespace
 map <C-K> :call TrimWhiteSpace()<CR>
 
+" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" Powerline
+" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+let g:Powerline_symbols = 'fancy'
+call Pl#Theme#InsertSegment('ws_marker', 'after', 'lineinfo')
+
