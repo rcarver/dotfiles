@@ -2,9 +2,7 @@
 
 ## dotfiles
 
-Your dotfiles are how you personalize your system. These are mine. The very
-prejudiced mix: OS X, zsh, Ruby, Rails, git, homebrew, rbenv, vim. If you
-match up along most of those lines, you may dig my dotfiles.
+Your dotfiles are how you personalize your system. These are mine.
 
 I was a little tired of having long alias files and everything strewn about
 (which is extremely common on other dotfiles projects, too). That led to this
@@ -27,7 +25,7 @@ script/bootstrap
 ```
 
 This will symlink the appropriate files in `.dotfiles` to your home directory.
-Everything is configured and tweaked within `~/.dotfiles`, though.
+Everything is configured and tweaked within `~/.dotfiles`.
 
 The main file you'll want to change right off the bat is `zsh/zshrc.symlink`,
 which sets up a few paths that'll be different on your particular machine.
@@ -35,13 +33,18 @@ which sets up a few paths that'll be different on your particular machine.
 You'll also want to change `git/gitconfig.symlink`, which will set you up as
 committing as Zach Holman. You probably don't want that.
 
+When you're happy with the setup, run `dot` in a Terminal window. `dot` is a
+simple script that installs some dependencies, sets sane OS X defaults, and so
+on. Tweak this script, and occasionally run `dot` from time to time to keep
+your environment fresh and up-to-date.
+
 ## topical
 
 Everything's built around topic areas. If you're adding a new area to your
 forked dotfiles — say, "Java" — you can simply add a `java` directory and put
 files in there. Anything with an extension of `.zsh` will get automatically
 included into your shell. Anything with an extension of `.symlink` will get
-symlinked without extension into `$HOME` when you run `rake install`.
+symlinked without extension into `$HOME` when you run `script/bootstrap`.
 
 ## what's inside
 
