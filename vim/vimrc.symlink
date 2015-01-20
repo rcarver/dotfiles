@@ -1,0 +1,216 @@
+set nocompatible " Be VIM
+
+
+" .vimrc files I have found useful.
+" https://github.com/spf13/spf13-vim/blob/3.0/.vimrc
+" https://github.com/fatih/dotfiles/blob/master/vimrc
+
+
+"
+" Vundle - vim plugin manager
+" https://github.com/gmarik/Vundle.vim
+"
+" To install more, add a 'Plugin' line and run `:PluginInstall`
+
+filetype off
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/Vundle.vim'
+
+"
+" My Plugins
+" keep sorted with `:!sort -f` 
+"
+
+Plugin 'SirVer/ultisnips'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'bling/vim-airline'
+Plugin 'fatih/vim-go'
+Plugin 'scrooloose/nerdtree'
+
+call vundle#end()
+
+
+"
+" Settings
+" 
+
+filetype plugin indent on       " Enable filetype plugins and indents
+syntax enable                   " Enable syntax highlighting
+
+set background=light
+colorscheme solarized
+
+set noerrorbells                " No beeps
+set number                      " Show line numbers
+set ruler                       " Show line and column number
+set backspace=indent,eol,start  " Makes backspace key more powerful.
+set showcmd                     " Show me what I'm typing
+set showmode                    " Show current mode.
+
+set noswapfile                  " Don't use swapfile
+set nobackup            	      " Don't create annoying backup files
+set splitright                  " Split vertical windows right to the current windows
+set splitbelow                  " Split horizontal windows below to the current windows
+set encoding=utf-8              " Set default encoding to UTF-8
+set autowrite                   " Automatically save before :next, :make etc.
+set autoread                    " Automatically reread changed files without asking me anything
+
+set laststatus=2                " Always show a status bar
+
+set fileformats=unix,dos,mac    " Prefer Unix over Windows over OS 9 formats
+
+set incsearch                   " Shows the match while typing
+set hlsearch                    " Highlight found searches
+set ignorecase                  " Search case insensitive...
+set smartcase                   " ... but not when search pattern contains upper case characters
+
+set nowrap                      " don't wrap lines
+set tabstop=2                   " a tab is two spaces
+set shiftwidth=2                " an autoindent (with <<) is two spaces
+set expandtab                   " use spaces, not tabs
+set nolist                        " Show invisible characters
+
+"
+" GUI Settings
+"
+
+if has("gui_running")
+
+  if has("autocmd")
+    autocmd VimResized * wincmd = " Automatically resize splits when resizing MacVim window
+  endif
+
+  " Use some transaprency
+  set transparency=1
+
+  " Customize the GUI
+  set guioptions=aAce
+
+  " Use the best font
+  if has("gui_macvim")
+    set guifont=Source\ Code\ Pro:h12
+    set linespace=1
+    set antialias
+    "set guifont=Monaco:h10
+    "set noantialias
+  end
+endif
+
+
+"
+" File Type Settings
+" 
+" http://tedlogan.com/techblog3.html
+" ts   = tabstop     - number of spaces that a tab counts for
+" et   = expandtab   - tabs become spaces (noet is tabs are tabs)
+" sw   = shiftwitch  - number of spaces to use for indent
+" sts  = softtabstop - how many spaces are used when you hit tab
+
+au BufNewFile,BufRead *.vim setf vimfile
+au BufNewFile,BufRead *.txt setf txt
+au BufNewFile,BufRead *.md  setf md
+au BufNewFile,BufRead *.js  setf js
+au BufNewFile,BufRead *.rb  setf js
+au BufNewFile,BufRead *.go  set ft=go " Handled by vim-go
+au BufNewFile,BufRead .nginx.conf*,nginx.conf* setf nginx
+
+au FileType vimfile   setlocal et   ts=2 sw=2 sts=2
+au FileType txt       setlocal et   ts=2 sw=2 sts=2
+au FileType md        setlocal et   ts=2 sw=2 sts=2
+au FileType js        setlocal et   ts=2 sw=2 sts=2
+au FileType go        setlocal noet ts=8 sw=8 sts=8
+au FileType nginx     setlocal noet ts=4 sw=4 sts=4
+
+
+"
+" Commands
+"
+
+" Yank to the end of a line - make Y consistent with C and D.
+noremap Y y$
+
+" Stamping - replace current word with last yank.
+noremap S "_diwP
+
+" Return switches between the last two buffers
+noremap <CR> <C-^>
+
+" Tab / Shift-Tab to cycle through buffers without saving
+noremap <Tab> :bnext!<CR>
+noremap <S-Tab> :bprevious!<CR>
+
+"
+" Plugins
+" 
+
+" =================================================================
+" NERDTree - file browser
+" https://github.com/scrooloose/nerdtree
+" =================================================================
+
+map <C-n> :NERDTreeToggle<CR>
+
+
+" =================================================================
+" Solarized - color scheme
+" https://github.com/altercation/vim-colors-solarized
+" =================================================================
+
+let g:solarized_italic=0
+let g:solarized_contrast="normal"
+let g:solarized_visibility="normal"
+
+
+" =================================================================
+" vim-airline - fancy status line
+" https://github.com/bling/vim-airline
+" =================================================================
+
+
+" =================================================================
+" YouCompleteMe - autocomplete
+" https://github.com/Valloric/YouCompleteMe
+" =================================================================
+
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_key_list_select_completion=[]
+let g:ycm_key_list_previous_completion=[]
+
+
+" =================================================================
+" UtilSnips - snippets
+" https://github.com/SirVer/ultisnips
+" =================================================================
+"
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<TAB>"
+let g:UltiSnipsJumpForwardTrigger="<TAB>"
+let g:UltiSnipsJumpBackwardTrigger="<C-z>"
+
+
+" =================================================================
+" vim-go - complete GO environment
+" https://github.com/fatih/vim-go
+" =================================================================
+
+let g:go_fmt_command = "goimports"
+let g:go_fmt_fail_silently = 1
+
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>t <Plug>(go-test)
+au FileType go nmap <leader>c <Plug>(go-coverage)
+
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+
+au FileType go nmap <Leader>i <Plug>(go-info)
+
+
+
