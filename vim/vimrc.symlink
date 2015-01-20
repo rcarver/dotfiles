@@ -28,6 +28,7 @@ Plugin 'SirVer/ultisnips'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
+Plugin 'ervandew/supertab'
 Plugin 'fatih/vim-go'
 Plugin 'scrooloose/nerdtree'
 
@@ -172,6 +173,16 @@ let g:solarized_visibility="normal"
 
 
 " =================================================================
+" SuperTab - improve behavior of tab.
+" https://github.com/ervandew/supertab
+" =================================================================
+
+" How to make UltiSnips and YCM play together with the <TAB> key.
+" http://0x3f.org/blog/make-youcompleteme-ultisnips-compatible/
+let g:SuperTabDefaultCompletionType = '<C-Tab>'
+
+
+" =================================================================
 " YouCompleteMe - autocomplete
 " https://github.com/Valloric/YouCompleteMe
 " =================================================================
@@ -180,17 +191,18 @@ let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_min_num_of_chars_for_completion = 1
 let g:ycm_key_list_select_completion=[]
 let g:ycm_key_list_previous_completion=[]
+let g:ycm_key_list_select_completion = ['<C-TAB>']
+let g:ycm_key_list_previous_completion = ['<C-S-TAB>']
 
 
 " =================================================================
 " UtilSnips - snippets
 " https://github.com/SirVer/ultisnips
 " =================================================================
-"
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+
 let g:UltiSnipsExpandTrigger="<TAB>"
 let g:UltiSnipsJumpForwardTrigger="<TAB>"
-let g:UltiSnipsJumpBackwardTrigger="<C-z>"
+let g:UltiSnipsJumpBackwardTrigger="<S-TAB>"
 
 
 " =================================================================
