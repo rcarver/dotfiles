@@ -1,10 +1,11 @@
 set nocompatible " Be VIM
 
-
 " .vimrc files I have found useful.
 " https://github.com/spf13/spf13-vim/blob/3.0/.vimrc
 " https://github.com/fatih/dotfiles/blob/master/vimrc
-
+"
+" More learning.
+" http://learnvimscriptthehardway.stevelosh.com/
 
 "
 " Vundle - vim plugin manager
@@ -21,23 +22,33 @@ Plugin 'gmarik/Vundle.vim'
 
 "
 " My Plugins
-" keep sorted with `:!sort -f` 
+"
+" Get more plugins.
+" http://vimawesome.com/
+"
+" keep sorted with `:!sort -f`
+" Save, `source %` then `:PluginInstall`
 "
 
+Plugin 'Raimondi/delimitMate'
 Plugin 'SirVer/ultisnips'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
 Plugin 'ervandew/supertab'
 Plugin 'fatih/vim-go'
+Plugin 'majutsushi/tagbar'
+Plugin 'mileszs/ack.vim'
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/syntastic'
 
 call vundle#end()
 
 
 "
 " Settings
-" 
+"
 
 filetype plugin indent on       " Enable filetype plugins and indents
 syntax enable                   " Enable syntax highlighting
@@ -75,15 +86,15 @@ set shiftwidth=2                " an autoindent (with <<) is two spaces
 set expandtab                   " use spaces, not tabs
 set nolist                        " Show invisible characters
 
+
 "
 " GUI Settings
 "
 
 if has("gui_running")
 
-  if has("autocmd")
-    autocmd VimResized * wincmd = " Automatically resize splits when resizing MacVim window
-  endif
+  " Automatically resize splits when resizing MacVim window
+  autocmd VimResized * wincmd =
 
   " Use some transaprency
   set transparency=1
@@ -111,20 +122,11 @@ endif
 " sw   = shiftwitch  - number of spaces to use for indent
 " sts  = softtabstop - how many spaces are used when you hit tab
 
-au BufNewFile,BufRead *.vim setf vimfile
-au BufNewFile,BufRead *.txt setf txt
-au BufNewFile,BufRead *.md  setf md
-au BufNewFile,BufRead *.js  setf js
-au BufNewFile,BufRead *.rb  setf js
-au BufNewFile,BufRead *.go  set ft=go " Handled by vim-go
-au BufNewFile,BufRead .nginx.conf*,nginx.conf* setf nginx
+au BufNewFile,BufRead *.go  set ft=go
+au BufNewFile,BufRead *.md  set ft=markdown
 
-au FileType vimfile   setlocal et   ts=2 sw=2 sts=2
-au FileType txt       setlocal et   ts=2 sw=2 sts=2
 au FileType md        setlocal et   ts=2 sw=2 sts=2
-au FileType js        setlocal et   ts=2 sw=2 sts=2
 au FileType go        setlocal noet ts=8 sw=8 sts=8
-au FileType nginx     setlocal noet ts=4 sw=4 sts=4
 
 
 "
@@ -138,11 +140,12 @@ noremap Y y$
 noremap S "_diwP
 
 " Return switches between the last two buffers
-noremap <CR> <C-^>
+nnoremap <CR> <C-^>
 
 " Tab / Shift-Tab to cycle through buffers without saving
 noremap <Tab> :bnext!<CR>
 noremap <S-Tab> :bprevious!<CR>
+
 
 "
 " Plugins
@@ -153,7 +156,35 @@ noremap <S-Tab> :bprevious!<CR>
 " https://github.com/scrooloose/nerdtree
 " =================================================================
 
+" Show/hide the file browser
 map <C-n> :NERDTreeToggle<CR>
+
+
+" =================================================================
+" NERDCommenter - commenting
+" https://github.com/scrooloose/nerdcommenter
+" =================================================================
+
+
+" =================================================================
+" Syntastic - syntax checker
+" http://vimawesome.com/plugin/syntastic
+" =================================================================
+
+" Always put errors into the location-list
+let g:syntastic_always_populate_loc_list = 1
+" Automatically open/close the location-list
+let g:syntastic_auto_loc_list = 1
+" Don't check when you open a file. Handy, but too slow.
+let g:syntastic_check_on_open = 0
+" Don't check when you quit
+let g:syntastic_check_on_wq = 0
+" Jump to the first error
+let g:syntastic_auto_jump = 1
+
+" Move through the location-list.
+noremap <C-j> :lnext<CR>
+noremap <C-k> :lprev<CR>
 
 
 " =================================================================
@@ -189,8 +220,7 @@ let g:SuperTabDefaultCompletionType = '<C-Tab>'
 
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_min_num_of_chars_for_completion = 1
-let g:ycm_key_list_select_completion=[]
-let g:ycm_key_list_previous_completion=[]
+" Map completions to SuperTab for better behavior.
 let g:ycm_key_list_select_completion = ['<C-TAB>']
 let g:ycm_key_list_previous_completion = ['<C-S-TAB>']
 
@@ -200,29 +230,78 @@ let g:ycm_key_list_previous_completion = ['<C-S-TAB>']
 " https://github.com/SirVer/ultisnips
 " =================================================================
 
+" TextMate-like snippets use <TAB> to move through.
 let g:UltiSnipsExpandTrigger="<TAB>"
 let g:UltiSnipsJumpForwardTrigger="<TAB>"
 let g:UltiSnipsJumpBackwardTrigger="<S-TAB>"
 
 
 " =================================================================
-" vim-go - complete GO environment
+" DelimitMate - auto pair parens, quotes, etc
+" https://github.com/Raimondi/delimitMate
+" =================================================================
+
+" Magic happens when you type paired characters.
+
+
+" =================================================================
+" Ack - searching
+" https://github.com/mileszs/ack.vim
+" =================================================================
+
+" Perform a search - <ctrl-f>
+noremap <C-f> :Ack<space>
+" Perform a search - <command-shift-f>
+noremap <D-F> :Ack<space>
+
+
+" =================================================================
+" TagBar - source code outlines
+" https://github.com/majutsushi/tagbar
+" =================================================================
+
+" Show and hide the tag pane
+nmap <leader>e :TagbarToggle<CR>
+
+" =================================================================
+" vim-go - complete golang environment
 " https://github.com/fatih/vim-go
 " =================================================================
 
+" gofmt + automatic imports
 let g:go_fmt_command = "goimports"
+" Don't show errors when gofmt fails
 let g:go_fmt_fail_silently = 1
+" Better, but currently flakey way to use gofmt
+let g:go_fmt_experimental = 0
+" Show info about the item under the cursor
+let g:go_auto_type_info = 1
+" :GoInstallBinaries puts things here. Global so it's not tied to the project.
+let g:go_bin_path = expand("~/.gotools")
 
+" Run the current file
 au FileType go nmap <leader>r <Plug>(go-run)
+" Build the current file (creates no artifact)
 au FileType go nmap <leader>b <Plug>(go-build)
+" Run tests for the current file
 au FileType go nmap <leader>t <Plug>(go-test)
+" Run coverage report
 au FileType go nmap <leader>c <Plug>(go-coverage)
 
-au FileType go nmap <Leader>ds <Plug>(go-def-split)
-au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
-au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+" View GoDoc for item under cursor
+au FileType go nmap <Leader>d <Plug>(go-doc-vertical)
+au FileType go nmap <Leader>db <Plug>(go-doc-browser)
 
-au FileType go nmap <Leader>i <Plug>(go-info)
+" Jump to definition for item under cursor
+au FileType go nmap gd <Plug>(go-def)
+" View definition of item under cursor in vertical split
+au FileType go nmap <Leader>ds <Plug>(go-def-vertical)
 
+" Rename the identifier under the cursor
+" :GoRename
+
+" Manage go binaries
+" :GoInstallBinaries
+" :GoUpdateBinaries
 
 
