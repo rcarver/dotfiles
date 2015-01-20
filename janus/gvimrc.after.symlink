@@ -1,6 +1,5 @@
 if has("autocmd")
   autocmd BufWritePost .gvimrc.after source ~/.gvimrc.after
-  autocmd BufWritePost .gvimrc.after source ~/.dotfiles/vim/gvimrc.after.symlink
 end
 nmap <Leader>g :edit ~/.gvimrc.after<CR>
 
@@ -24,7 +23,7 @@ end
 let g:solarized_contrast="normal"    "default value is normal
 let g:solarized_visibility="normal"    "default value is normal
 syntax enable
-set background=dark
+set background=light
 colorscheme solarized
 
 " Use some transaprency

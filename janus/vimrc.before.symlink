@@ -1,6 +1,5 @@
 if has("autocmd")
   autocmd BufWritePost .vimrc.after source ~/.vimrc.before
-  autocmd BufWritePost .vimrc.after source ~/.dotfiles/vim/vimrc.before.symlink
 end
 nmap <Leader>vb :edit ~/.vimrc.before<CR>
 
