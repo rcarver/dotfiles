@@ -37,6 +37,7 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
 Plugin 'ervandew/supertab'
 Plugin 'fatih/vim-go'
+Plugin 'kien/ctrlp.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'mileszs/ack.vim'
 Plugin 'scrooloose/nerdcommenter'
@@ -86,6 +87,7 @@ set shiftwidth=2                " an autoindent (with <<) is two spaces
 set expandtab                   " use spaces, not tabs
 set nolist                        " Show invisible characters
 
+let mapleader=","               " Use comma as the leader
 
 "
 " GUI Settings
@@ -115,7 +117,7 @@ endif
 
 "
 " File Type Settings
-" 
+"
 " http://tedlogan.com/techblog3.html
 " ts   = tabstop     - number of spaces that a tab counts for
 " et   = expandtab   - tabs become spaces (noet is tabs are tabs)
@@ -146,15 +148,27 @@ nnoremap <CR> <C-^>
 noremap <Tab> :bnext!<CR>
 noremap <S-Tab> :bprevious!<CR>
 
+function! TrimWhiteSpace()
+  %s/\s*$//
+  ''
+:endfunction
+
+" leader-s to trim trailing whitespace
+map <leader>s :call TrimWhiteSpace()<CR>:w<CR>
+
+
 
 "
 " Plugins
-" 
+"
 
 " =================================================================
 " NERDTree - file browser
 " https://github.com/scrooloose/nerdtree
 " =================================================================
+
+" Ignore common generated files
+" let NERDTreeIgnore=['\.pyc$', '\.pyo$', '\.rbc$', '\.rbo$', '\.class$', '\.o$', '\~$']
 
 " Show/hide the file browser
 map <C-n> :NERDTreeToggle<CR>
@@ -164,6 +178,17 @@ map <C-n> :NERDTreeToggle<CR>
 " NERDCommenter - commenting
 " https://github.com/scrooloose/nerdcommenter
 " =================================================================
+
+" =================================================================
+" CtrlP - fuzzy file search
+" https://github.com/kien/ctrlp.vim
+" =================================================================
+
+" command-t to start file search
+nnoremap <d-t> :CtrlP<CR>
+" ctrl-p to start file search
+" ctrl-o to start buffer search
+nnoremap <c-o> :CtrlPBuffer<CR>
 
 
 " =================================================================
@@ -248,11 +273,18 @@ let g:UltiSnipsJumpBackwardTrigger="<S-TAB>"
 " Ack - searching
 " https://github.com/mileszs/ack.vim
 " =================================================================
+" LAck puts results in location-list instead of quickfix.
+
+let g:ack_default_options = " -s -H --nocolor --nogroup --column --ignore-dir=log --ignore-dir=db --ignore-dir=vendor"
 
 " Perform a search - <ctrl-f>
 noremap <C-f> :Ack<space>
 " Perform a search - <command-shift-f>
 noremap <D-F> :Ack<space>
+" Visual mode: Perform a search for the current visual selection.
+vnoremap <leader>w y:Ack<space><c-r>"<cr>
+" Normal mode: Perform a search for the word under the cursor.
+nnoremap <leader>w ye:Ack<space><c-r>"<cr>
 
 
 " =================================================================
